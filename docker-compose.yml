@@ -1,0 +1,35 @@
+version: '2'
+services:
+  wordpress:
+    image: codeable/wordpress:4.5.2
+    volumes:
+      - ./wp-content:/var/www/wp-content
+    env_file: .env
+    ports:
+      - "8000:80"
+    links:
+      - mysql
+      - redis
+  cron:
+    build: .
+    command: crond -f -l 6 -L /dev/stdout
+    volumes:
+      - ./wp-content:/var/www/wp-content
+    env_file: .env
+    links:
+      - mysql
+      - redis
+  mysql:
+    image: mariadb:5.5
+    volumes:
+      - ./mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: wp
+      MYSQL_DATABASE: wp
+      MYSQL_USER: wp
+      MYSQL_PASSWORD: wp
+  redis:
+    image: redis:3.2.0-alpine
+    command: redis-server --appendonly yes
+    volumes:
+      - ./redis:/data

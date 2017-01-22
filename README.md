@@ -13,6 +13,22 @@ Path mappings:
 Q: in phpstorm, I have to set up path mappings. does this mean that I have to keep two repositories - one in my host OS and one in the guest OS? even though the one in the guest OS is shared between the two?  
 A: vagrant shares the folders, so you only maintain one repo, but for the remote debugging to work, it needs to know where to map them to inside of vagrant
 
+## Docker
+
+If you choose to use Docker for your working environment you'll need first to install Docker in your machine:
+https://docs.docker.com/engine/installation/
+
+Afterwards you should follow these steps for using Docker in your WordPress site:
+
+- Create an .env file and put in values that you have in your existing wp-config.php.
+- (Optionally) Delete wp-admin, wp-includes and all .php files in the project directory. Remember, WordPress core is provided by the image!
+- (Optionally) Export the database from where you've used it until now, put it into wp-content, log into the container ($ docker-compose run wordpress /bin/bash, cd to /var/www/wp-content where the SQL dump should be and import it into our mysql container)
+- Run $ docker-compose up
+
+More info in these tutorials:
+- https://codeable.io/wordpress-developers-intro-docker/
+- https://codeable.io/wordpress-developers-intro-to-docker-part-two/
+
 ## Automation scripts
 The file `newtvp-auto.php` automates the creation the TVP website from file and database backups.
 
