@@ -13,6 +13,9 @@ Path mappings:
 Q: in phpstorm, I have to set up path mappings. does this mean that I have to keep two repositories - one in my host OS and one in the guest OS? even though the one in the guest OS is shared between the two?  
 A: vagrant shares the folders, so you only maintain one repo, but for the remote debugging to work, it needs to know where to map them to inside of vagrant
 
+Troubleshooting  
+- If you get the error Errno::EADDRNOTAVAIL when doing `vagrant up`, see [this comment](https://github.com/mitchellh/vagrant/issues/3031#issuecomment-288570525).
+
 ## Docker
 
 If you choose to use Docker for your working environment you'll need first to install Docker in your machine:
