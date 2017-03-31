@@ -2,16 +2,23 @@
 Github repository for The Venus Project's website
 
 ## Vagrant
-In the `vagrant` directory are included configuration files and shell scripts for an automated creation of a full LAMP stack with all needed configurations and software packages for running the TVP website. Check the [vagrant documentation](https://www.vagrantup.com/docs/) for more details.
+Vagrant allows you to run a virtual machine (vm) on your computer and do your development work within the vm. It can automate the installation and configuration of an operating system in the vm, including the installation and configuration of any software packages you want. It also can keep folders in sync between your host OS and your guest OS (on the vm). 
 
-Some additional info about Vagrant:  
-How to configure Xdebug in PhpStorm through Vagrant: https://danemacmillan.com/how-to-configure-xdebug-in-phpstorm-through-vagrant/#content-remote-debugger-v8
-Some more info on debugging webhooks: http://www.devinzuczek.com/anything-at-all/i-have-xdebug-and-php-is-slow/ 
-Debugging with PHPStorm and the PODS framework: https://docs.google.com/document/d/1WOzgYlU8PnJ99ScRePumfUwg645vmuE4v5MyshOYF4M/edit
+In the `vagrant` directory here are included configuration files and shell scripts for an automated creation of a full LAMP stack with all needed configurations and software packages for running the TVP website.
+
+To get started with Vagrant:  
+1. [Install the Vagrant package](https://www.vagrantup.com/downloads.html)
+2. [Install VirtualBox](https://www.virtualbox.org/wiki/Downloads) - this provides the vm functionality
+3. Go through the [Vagrant Getting Started Guide](https://www.vagrantup.com/intro/getting-started/)
+
+Debugging:  
+- [How to configure Xdebug in PhpStorm through Vagrant](https://danemacmillan.com/how-to-configure-xdebug-in-phpstorm-through-vagrant/#content-remote-debugger-v8)
+- [Some more info on debugging webhooks](http://www.devinzuczek.com/anything-at-all/i-have-xdebug-and-php-is-slow/ )
+- [Debugging with PHPStorm and the PODS framework](https://docs.google.com/document/d/1WOzgYlU8PnJ99ScRePumfUwg645vmuE4v5MyshOYF4M/edit)
 
 Path mappings:  
-Q: in phpstorm, I have to set up path mappings. does this mean that I have to keep two repositories - one in my host OS and one in the guest OS? even though the one in the guest OS is shared between the two?  
-A: vagrant shares the folders, so you only maintain one repo, but for the remote debugging to work, it needs to know where to map them to inside of vagrant
+Q: In phpstorm, I have to set up path mappings. does this mean that I have to keep two repositories - one in my host OS and one in the guest OS? even though the one in the guest OS is shared between the two?  
+A: Vagrant shares the folders, so you only maintain one repo, but for the remote debugging to work, it needs to know where to map them to inside of vagrant
 
 Troubleshooting  
 - If you get the error Errno::EADDRNOTAVAIL when doing `vagrant up`, see [this comment](https://github.com/mitchellh/vagrant/issues/3031#issuecomment-288570525).
