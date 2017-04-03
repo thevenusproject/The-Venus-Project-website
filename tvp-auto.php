@@ -1,27 +1,34 @@
 <?php
 /* Note: this script works on Windows and Linux. */
 
+/* Instructions
+1) Change the settings below to match the correct values for your localhost
+2) Run this script throught CLI, e.g.: php tvp-auto.php
+*/
+
 define('DS', DIRECTORY_SEPARATOR);
 
-/* Settings */
+/*** Settings - Filesystem ***/
+$delete_exst_filesystem = true; //whether to delete the existing filesystem and extract the archived new one on its place; set to false if you only want db import
+$newtvp_root_dir = DS.'vagrant'.DS.'tvp'.DS; //the Wordpress root directory, with a trailing slash
+$path_to_zip_archive = DS.'vagrant'.DS.'tvp.zip'; //path to the zipped archive of the filesystem
+
+/*** Settings - Database ***/
 $localhost_mysql_user = ''; //preferably put root in here
 $localhost_mysql_user_pw = ''; //password of your mysql root user, if you have set one
 $newtvp_database = ''; //how you want the Wordpress db to be named. If you already have one, it'll first be dropped.
 $newtvp_db_prefix = ''; //Wordpress table prefix
 $newtvp_civi_database = ''; //how you want the CiviCRM db to be named. If you already have one, it'll first be dropped.
-$path_newtvp_dump = DS.'var'.DS.'www'.DS.'newtvp.sql'; //path to the Wordpress dump
-$path_newtvpcivi_dump = DS.'var'.DS.'www'.DS.'newtvpcivi.sql'; //path to the CiviCRM dump
+$path_newtvp_dump = DS.'vagrant' . DS .'tvp.sql'; //path to the Wordpress dump
+$path_newtvpcivi_dump = DS.'vagrant'.DS.'tvpcivi.sql'; //path to the CiviCRM dump
 $path_to_mysqlexe = 'D:'.DS.'xampp'.DS.'mysql'.DS.'bin'.DS.'mysql.exe'; //path to your mysql binary; needed on Windows only
-$newtvp_root_dir = DS.'var'.DS.'www'.DS.'newtvp'.DS; //the Wordpress root directory, with a trailing slash
-$path_to_zip_archive = DS.'var'.DS.'www'.DS.'newtvp.zip'; //path to the zipped archive of the filesystem
-$newtvp_domain = 'newtvp.example.com'; //the domain you would like the site to have
+$newtvp_domain = 'tvp.example.com'; //the domain you would like the site to have
 
 
-/* Instructions
-1) Change the settings above to match the correct values for your localhost
-2) Run this script throught CLI
-*/
 
+/**************************/
+/*** BEGIN SCRIPT CODE ****/
+/**************************/
 
 /* Find out OS */
 
@@ -35,52 +42,58 @@ if (strtoupper(substr($OS, 0, 3)) === 'LIN') {
 	die;
 }
 
-/* Extract the zipped filesystem and rename the folder */
+/* Determine whether to delete existing filesystem */
 
-//Delete site dir if it exists
-if(file_exists($newtvp_root_dir)) {
-	echo "Attempting to delete {$newtvp_root_dir}. If you don't get an error, it succeeded.\n";
-	
-	if($OS == 'Windows') {
-		exec("rd /s /q {$newtvp_root_dir}", $result);
-	} 
-	elseif($OS == 'Linux') {
-		exec("rm -rf {$newtvp_root_dir}", $result);
-	}
-}
-
-$zip = new ZipArchive;
-if($zip->open($path_to_zip_archive) === true) {
-	
-		// get the name of the folder inside the archive
-		$old_folder_name = $zip->getNameIndex(0);
-		$old_folder_name = rtrim($old_folder_name, DS);
-		
-		//figure out directory to extract the archive to
-		$extraction_dir = rtrim($newtvp_root_dir, DS);
-		$parts = explode(DS, $extraction_dir);
-		array_pop($parts);
-		$extraction_dir = implode(DS, $parts);
-		
-		// extract archive
-		echo "Starting to extract {$path_to_zip_archive}\n";
-		$zip->extractTo($extraction_dir);
-		$zip->close();
-		echo "Extracted " . $path_to_zip_archive . " to " . $extraction_dir . "\n";
-		
-		// rename the extracted folder
-		$parts = explode(DS, $path_to_zip_archive, -1);
-		$old_path = implode(DS, $parts);
-		$old_path .= DS . $old_folder_name . DS;
-		if(rename($old_path, $newtvp_root_dir)) {
-			echo "Renamed " . $old_path . " to " . $newtvp_root_dir . "\n";
-		}
+if(!$delete_exst_filesystem) {
+	echo "Skipping deletion of {$newtvp_root_dir} as per the Settings.\n";
 }
 else {
-	echo "Could not open the archive " . $path_to_zip_archive . "\n";
-	die;
-}
+	/* Extract the zipped filesystem and rename the folder */
 
+	//Delete site dir if it exists
+	if(file_exists($newtvp_root_dir)) {
+		echo "Attempting to delete {$newtvp_root_dir}. If you don't get an error, it succeeded.\n";
+		
+		if($OS == 'Windows') {
+			exec("rd /s /q {$newtvp_root_dir}", $result);
+		} 
+		elseif($OS == 'Linux') {
+			exec("rm -rf {$newtvp_root_dir}", $result);
+		}
+	}
+
+	$zip = new ZipArchive;
+	if($zip->open($path_to_zip_archive) === true) {
+		
+			// get the name of the folder inside the archive
+			$old_folder_name = $zip->getNameIndex(0);
+			$old_folder_name = rtrim($old_folder_name, DS);
+			
+			//figure out directory to extract the archive to
+			$extraction_dir = rtrim($newtvp_root_dir, DS);
+			$parts = explode(DS, $extraction_dir);
+			array_pop($parts);
+			$extraction_dir = implode(DS, $parts);
+			
+			// extract archive
+			echo "Starting to extract {$path_to_zip_archive}\n";
+			$zip->extractTo($extraction_dir);
+			$zip->close();
+			echo "Extracted " . $path_to_zip_archive . " to " . $extraction_dir . "\n";
+			
+			// rename the extracted folder
+			$parts = explode(DS, $path_to_zip_archive, -1);
+			$old_path = implode(DS, $parts);
+			$old_path .= DS . $old_folder_name . DS;
+			if(rename($old_path, $newtvp_root_dir)) {
+				echo "Renamed " . $old_path . " to " . $newtvp_root_dir . "\n";
+			}
+	}
+	else {
+		echo "Could not open the archive " . $path_to_zip_archive . "\n";
+		die;
+	}
+}
 
 /* Establish database connection */
 
