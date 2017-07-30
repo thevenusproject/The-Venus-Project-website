@@ -10,7 +10,7 @@ define('DS', DIRECTORY_SEPARATOR);
 
 /*** Settings - Filesystem ***/
 $delete_exst_filesystem = true; //whether to delete the existing filesystem and extract the archived new one on its place; set to false if you only want db import
-$newtvp_root_dir = DS.'vagrant'.DS.'tvp.example.com'.DS; //the Wordpress root directory, with a trailing slash
+$newtvp_root_dir = DS.'vagrant'.DS.'newtvp'.DS; //the Wordpress root directory, with a trailing slash
 $path_to_zip_archive = DS.'vagrant'.DS.'tvp.zip'; //path to the zipped archive of the filesystem
 
 /*** Settings - Database ***/
