@@ -45,7 +45,7 @@ echo "phpmyadmin phpmyadmin/app-password-confirm password $DBPASSWD" | debconf-s
 echo "phpmyadmin phpmyadmin/mysql/admin-pass password $DBPASSWD" | debconf-set-selections
 echo "phpmyadmin phpmyadmin/mysql/app-pass password $DBPASSWD" | debconf-set-selections
 echo "phpmyadmin phpmyadmin/reconfigure-webserver multiselect none" | debconf-set-selections
-apt-get -y install mysql-server-5.5 phpmyadmin > /dev/null 2>&1
+apt-get -y install mysql-server-5.6 phpmyadmin > /dev/null 2>&1
 a2enconf phpmyadmin > /dev/null 2>&1
 
 # add virtual host for the site
