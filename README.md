@@ -9,16 +9,17 @@ In the `vagrant` directory here are included configuration files and shell scrip
 To get started with Vagrant:  
 1. [Install the Vagrant package](https://www.vagrantup.com/downloads.html)
 2. [Install VirtualBox](https://www.virtualbox.org/wiki/Downloads) - this provides the vm functionality
-3. Go through the [Vagrant Getting Started Guide](https://www.vagrantup.com/intro/getting-started/)
+3. Go through the [Vagrant Getting Started Guide](https://www.vagrantup.com/intro/getting-started/) (this is only for learning)
 4. Place the `Vagrantfile`, `bootstrap.sh` and `startup.sh` files in the root Vagrant directory on your host OS
     - `Vagrantfile` contains general setup instructions for your vagrant box
     - `bootstrap.sh` instructions get executed when provisioning the vagrant box (i.e. installing or reinstalling the guest OS)
     - `startup.sh` instructions get executed each time you start the guest OS (i.e. on `vagrant up`)
 4. Create on your host OS the directories that will be synced between host and guest OS:
-    - Create `var_log` inside the root Vagrant directory on your host OS. 
+    - Create `var_log` inside the root Vagrant directory on your host OS.  
     - Create `sites-available` inside the root Vagrant directory on your host OS.
     - Put the `000-default.conf` file inside `sites-available`. This is Ubuntu's file for virtual hosts.
-5. Add tvp.example.com to your hosts file on your host OS ([instructions](https://support.rackspace.com/how-to/modify-your-hosts-file/))
+5. Add tvp.example.com to your hosts file on your host OS, map it to 127.0.0.1 ([instructions](https://support.rackspace.com/how-to/modify-your-hosts-file/))
+6. Create `newtvp` directory inside the root Vagrant directory on your host OS.
 
 Debugging:  
 - [How to configure Xdebug in PhpStorm through Vagrant](https://danemacmillan.com/how-to-configure-xdebug-in-phpstorm-through-vagrant/#content-remote-debugger-v8)
