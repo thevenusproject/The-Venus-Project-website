@@ -52,7 +52,7 @@ a2enconf phpmyadmin > /dev/null 2>&1
 cat > /etc/apache2/sites-enabled/000-default.conf <<EOF
 <VirtualHost *:80>
     DocumentRoot /var/www/newtvp
-	ServerName SITEURL
+	ServerName $SITEURL
 	ServerAdmin webmaster@localhost
 	
     ErrorLog /var/www/newtvp_error.log
@@ -66,7 +66,7 @@ cat > /etc/apache2/sites-enabled/000-default.conf <<EOF
 
 <VirtualHost *:443>
     DocumentRoot /var/www/newtvp
-	ServerName SITEURL
+	ServerName $SITEURL
 	ServerAdmin webmaster@localhost
 	
 	SSLEngine on
