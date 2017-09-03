@@ -18,8 +18,11 @@ To get started with Vagrant:
     - Create `var_log` inside the root Vagrant directory on your host OS.  
     - Create `sites-available` inside the root Vagrant directory on your host OS.
     - Put the `000-default.conf` file inside `sites-available`. This is Ubuntu's file for virtual hosts.
-5. Add tvp.example.com to your hosts file on your host OS, map it to 127.0.0.1 ([instructions](https://support.rackspace.com/how-to/modify-your-hosts-file/))
+5. Add newtvp.example.com to your hosts file on your host OS, map it to 127.0.0.1 ([instructions](https://support.rackspace.com/how-to/modify-your-hosts-file/))
 6. Create `newtvp` directory inside the root Vagrant directory on your host OS.
+
+Troubleshooting  
+- If you get the error Errno::EADDRNOTAVAIL when doing `vagrant up`, see [this comment](https://github.com/mitchellh/vagrant/issues/3031#issuecomment-288570525).
 
 Debugging:  
 - [How to configure Xdebug in PhpStorm through Vagrant](https://danemacmillan.com/how-to-configure-xdebug-in-phpstorm-through-vagrant/#content-remote-debugger-v8)
@@ -29,9 +32,6 @@ Debugging:
 Path mappings:  
 Q: In phpstorm, I have to set up path mappings. does this mean that I have to keep two repositories - one in my host OS and one in the guest OS? even though the one in the guest OS is shared between the two?  
 A: Vagrant shares the folders, so you only maintain one repo, but for the remote debugging to work, it needs to know where to map them to inside of vagrant
-
-Troubleshooting  
-- If you get the error Errno::EADDRNOTAVAIL when doing `vagrant up`, see [this comment](https://github.com/mitchellh/vagrant/issues/3031#issuecomment-288570525).
 
 ## Docker
 
