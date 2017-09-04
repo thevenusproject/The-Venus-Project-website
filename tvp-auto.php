@@ -3,15 +3,15 @@
 
 /* Instructions
 1) Change the settings below to match the correct values for your localhost
-2) Run this script throught CLI, e.g.: php tvp-auto.php
+2) Run this script (on the guest vm) throught CLI, e.g.: php tvp-auto.php
 */
 
 define('DS', DIRECTORY_SEPARATOR);
 
 /*** Settings - Filesystem ***/
-$delete_exst_filesystem = true; //whether to delete the existing filesystem and extract the archived new one on its place; set to false if you only want db import
+$delete_exst_filesystem = true; //whether to delete the existing filesystem and extract an archived new one on its place. Set to false if you already have the filesystem and you only want db import
 $newtvp_root_dir = DS.'vagrant'.DS.'newtvp'.DS; //the Wordpress root directory, with a trailing slash
-$path_to_zip_archive = DS.'vagrant'.DS.'tvp.zip'; //path to the zipped archive of the filesystem
+$path_to_zip_archive = DS.'vagrant'.DS.'tvp.zip'; //path to the zipped archive of the filesystem. If you don't have a zipped archived but instead have a folder with the filesystem, leave this empty and set $delete_exst_filesystem to false
 
 /*** Settings - Database ***/
 $localhost_mysql_user = ''; //preferably put root in here
@@ -22,7 +22,7 @@ $newtvp_civi_database = ''; //how you want the CiviCRM db to be named. If you al
 $path_newtvp_dump = DS.'vagrant' . DS .'tvp.sql'; //path to the Wordpress dump
 $path_newtvpcivi_dump = DS.'vagrant'.DS.'tvpcivi.sql'; //path to the CiviCRM dump
 $path_to_mysqlexe = 'D:'.DS.'xampp'.DS.'mysql'.DS.'bin'.DS.'mysql.exe'; //path to your mysql binary; needed on Windows only
-$newtvp_domain = 'tvp.example.com'; //the domain you would like the site to have
+$newtvp_domain = 'newtvp.example.com'; //the domain you would like the site to have
 
 
 
