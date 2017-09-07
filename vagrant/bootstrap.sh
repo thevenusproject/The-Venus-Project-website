@@ -7,7 +7,10 @@ SITEURL=newtvp.example.com
 DBUSER=root
 DBPASSWD=root
 
-# install and configure apache
+export DEBIAN_FRONTEND=noninteractive
+
+# purge, then install and configure apache
+apt-get purge apache2*
 apt-get update
 apt-get install -y -o Dpkg::Options::="--force-confold"
 if ! [ -L /var/www ]; then
