@@ -351,6 +351,9 @@ if(file_exists($newtvp_root_dir . 'wp-content/object-cache.php')) {
 $root_htaccess = file($newtvp_root_dir . '.htaccess');
 
 foreach($root_htaccess as $i => $value) {
+	if(strpos($value,"valid-user") !== false) {
+		$root_htaccess[$i] = "#" . $value;
+	}
 	if(strpos($value,"AddHandler") !== false) {
 		$root_htaccess[$i] = "#" . $value;
 	}	
