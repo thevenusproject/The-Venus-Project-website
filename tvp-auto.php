@@ -300,7 +300,8 @@ if(file_put_contents($newtvp_root_dir . 'wp-config.php', $wp_config)) {
 
 /* Change civicrm.settings.php */
 
-$civi_config = file($newtvp_root_dir . 'wp-content/plugins/civicrm/civicrm.settings.php');
+//$civi_config = file($newtvp_root_dir . 'wp-content/plugins/civicrm/civicrm.settings.php'); //this was the old path
+$civi_config = file($newtvp_root_dir . 'wp-content/uploads/civicrm/civicrm.settings.php');
 foreach($civi_config as $i => $value) {
 	if(strpos($value,"define( 'CIVICRM_UF_DSN'") !== false) {
 		$civi_config[$i] = "define( 'CIVICRM_UF_DSN', 'mysql://" . $localhost_mysql_user . ":" . $localhost_mysql_user_pw .  "@localhost/" . $newtvp_database . "?new_link=true' );\n";
