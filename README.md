@@ -38,12 +38,27 @@ A: Vagrant shares the folders, so you only maintain one repo, but for the remote
 If you choose to use Docker for your working environment you'll need first to install Docker in your machine:
 https://docs.docker.com/engine/installation/
 
-Afterwards you should follow these steps for using Docker in your WordPress site:
+Afterwards you should follow these steps for using Docker in your The Venus Project development site:
 
-- Create an .env file and put in values that you have in your existing wp-config.php.
-- (Optionally) Delete wp-admin, wp-includes and all .php files in the project directory. Remember, WordPress core is provided by the image!
-- (Optionally) Export the database from where you've used it until now, put it into wp-content, log into the container ($ docker-compose run wordpress /bin/bash, cd to /var/www/wp-content where the SQL dump should be and import it into our mysql container)
-- Run $ docker-compose up
+- Copy `.env.dist` file to `.env` and fill in missing values which you can find in your original `wp-config.php`.
+- Copy your original `wp-content` directory from server or backup to `docker/www/wp-content/` directory.
+- Run `$ docker-compose up`. You should see that `wordpress` container has been started successfully: `NOTICE: ready to handle connections`.
+- Import DB backups as follows (order matters, because dumps overlap on `civicrm_*` tables):
+  + `docker-compose run --rm -v /full/path/to/_wordpressdb.sql:/dump.sql db sh -c 'mysql -hdb -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE" < /dump.sql'`
+  + `docker-compose run --rm -v /full/path/to/_civicrmdb.sql:/dump.sql db sh -c 'mysql -hdb -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE" < /dump.sql'`
+- Run `$ docker-compose run --rm wordpress php tools/init.php`.
+- Run `$ docker-compose run --rm wordpress php tools/update-site-domain.php localhost:8080`.
+- Grant write permissions to the web-server, e.g.:
+  + `HTTPDUSER=www-data`
+  + `sudo setfacl -dR -m u:"$HTTPDUSER":rwX -m u:$(whoami):rwX docker/www`
+  + `sudo setfacl -R -m u:"$HTTPDUSER":rwX -m u:$(whoami):rwX docker/www`
+
+Now you have several endpoints to work with:
+- `http://localhost:8080/` - The Venus Project development website.
+- `http://localhost:8081/` - Adminer DB interface to make DB administration easier.
+- `http://localhost:8082/` - MailHog, mail debugger. All emails from WordPress and CiviCRM are redirected to MailHog SMTP server (see `mail` container) and are displayed on this nice web interface.
+
+To setup your admin password go to My Account -> Lost password and restore password for the user `thevenusproject`. Check your inbox in MailHog and follow the instructions.
 
 More info in these tutorials:
 - https://codeable.io/wordpress-developers-intro-docker/
@@ -53,6 +68,12 @@ More info in these tutorials:
 The file `tvp-auto.php` automates the creation of the TVP website from filesystem and database backups.
 
 The file `ngrok-auto.php` automates the changing of the TVP website's domain (on your local environment). This becomes useful when you need to often change the local domain that the site runs on, for example when you are using a tool like ngrok (since ngrok runs on a new domain every time you start it). ngrok comes quite handy when you are testing webhooks (e.g. from Stripe and Paypal) and you need to expose the local website to the Internet in order for the webhooks to reach it. For more information on ngrok, [see their docs](https://ngrok.com/docs).
+
+If you use docker, you can run `ngrok` from a docker image:
+- Run `$ docker run --rm -it --net=host wernight/ngrok ngrok http localhost:8080`
+- Run `$ docker-compose run --rm wordpress php tools/update-site-domain.php yourtempdomain.ngrok.io`
+- `ngrok` web interface is accessible by visiting `http://localhost:4040`
+- When you are done using `ngrok`, restore your site URL to localhost: `$ docker-compose run --rm wordpress php tools/update-site-domain.php localhost:8080`
 
 ## Automated acceptance tests
 The `tests.zip` file contains a backup of the git repository that we have on Bitbucket. It contains our automated acceptance tests.

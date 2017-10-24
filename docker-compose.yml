@@ -1,35 +1,58 @@
 version: '2'
 services:
   wordpress:
-    image: codeable/wordpress:4.5.2
+    build: docker/
     volumes:
-      - ./wp-content:/var/www/wp-content
+      - ./docker/www:/var/www/html
     env_file: .env
+    links:
+      - db
+      - redis
+      - mail
+#  cron:
+#    build: .
+#    command: crond -f -l 6 -L /dev/stdout
+#    volumes:
+#      - ./wp-content:/var/www/wp-content
+#    env_file: .env
+#    links:
+#      - db
+#      - redis
+  web:
+    image: raulr/nginx-wordpress
     ports:
-      - "8000:80"
+      - "8080:80"
     links:
-      - mysql
-      - redis
-  cron:
-    build: .
-    command: crond -f -l 6 -L /dev/stdout
-    volumes:
-      - ./wp-content:/var/www/wp-content
-    env_file: .env
-    links:
-      - mysql
-      - redis
-  mysql:
-    image: mariadb:5.5
-    volumes:
-      - ./mysql:/var/lib/mysql
+      - wordpress
+    volumes_from:
+      - wordpress
     environment:
-      MYSQL_ROOT_PASSWORD: wp
-      MYSQL_DATABASE: wp
-      MYSQL_USER: wp
-      MYSQL_PASSWORD: wp
+      POST_MAX_SIZE: 128m
+  db:
+    image: mysql:5.7
+    volumes:
+      - db:/var/lib/mysql
+    env_file: .env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${WORDPRESS_DB_PASSWORD}
+      MYSQL_DATABASE: ${WORDPRESS_DB_NAME}
+      MYSQL_USER: ${WORDPRESS_DB_USER}
+      MYSQL_PASSWORD: ${WORDPRESS_DB_PASSWORD}
   redis:
     image: redis:3.2.0-alpine
     command: redis-server --appendonly yes
     volumes:
-      - ./redis:/data
+      - redis:/data
+  mail:
+    image: mailhog/mailhog
+    ports:
+      - "8082:8025"
+  adminer:
+    image: adminer
+    ports:
+      - "8081:8080"
+    environment:
+      ADMINER_DESIGN: pappu687
+volumes:
+  db:
+  redis:
