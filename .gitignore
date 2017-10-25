@@ -1,0 +1,6 @@
+docker/www/*
+!docker/www/wp-content/.gitkeep
+!docker/www/tools
+docker/dbdump/*
+!docker/dbdump/.gitkeep
+.env
