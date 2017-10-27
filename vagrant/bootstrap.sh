@@ -17,7 +17,7 @@ fi
 a2enmod rewrite
 a2enmod ssl
 
-# install php packages
+# Install PHP packages.
 apt-get install -y php5 php5-cli libapache2-mod-php5 php5-mcrypt php5-mysql php5-curl php5-xdebug
 sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php5/apache2/php.ini
 sed -i "s/display_errors = .*/display_errors = On/" /etc/php5/apache2/php.ini
@@ -34,7 +34,7 @@ xdebug.remote_handler="dbgp"
 EOF
 fi 
 
-# Install mysql and phpmyadmin.
+# Install MySQL and PHPMyAdmin.
 echo "mysql-server mysql-server/root_password password $DBPASSWD" | debconf-set-selections
 echo "mysql-server mysql-server/root_password_again password $DBPASSWD" | debconf-set-selections
 echo "phpmyadmin phpmyadmin/dbconfig-install boolean true" | debconf-set-selections
@@ -42,7 +42,7 @@ echo "phpmyadmin phpmyadmin/app-password-confirm password $DBPASSWD" | debconf-s
 echo "phpmyadmin phpmyadmin/mysql/admin-pass password $DBPASSWD" | debconf-set-selections
 echo "phpmyadmin phpmyadmin/mysql/app-pass password $DBPASSWD" | debconf-set-selections
 echo "phpmyadmin phpmyadmin/reconfigure-webserver multiselect none" | debconf-set-selections
-apt-get -y install mysql-server-5.6 phpmyadmin > /dev/null
+apt-get -y install mysql-server phpmyadmin > /dev/null
 a2enconf phpmyadmin > /dev/null
 
 # Add virtual host for the site.
