@@ -1,6 +1,43 @@
 # The-Venus-Project-website
 Github repository for The Venus Project's website
 
+
+## Docker (Recommended)
+
+If you choose to use Docker for your working environment you'll need first to install Docker in your machine:
+https://docs.docker.com/engine/installation/
+
+Go through all get started steps to be familiar with docker:
+https://docs.docker.com/get-started/
+
+Afterwards you should follow these steps for using Docker in your The Venus Project development site:
+
+- Copy `.env.dist` file to `.env` and fill in ONLY missing values which you can find in your original `wp-config.php`.
+- Copy your original `wp-content` directory from server or backup to `docker/www/wp-content/` directory.
+- Run `$ sudo docker-compose up`. You should see that `wordpress` container has been started successfully: `NOTICE: ready to handle connections`.
+- In the new terminal import DB backups as follows (order matters, because dumps overlap on `civicrm_*` tables):
+  + `sudo docker-compose run --rm -v /full/path/to/_wordpressdb.sql:/dump.sql db sh -c 'mysql -hdb -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE" < /dump.sql'`
+  + `sudo docker-compose run --rm -v /full/path/to/_civicrmdb.sql:/dump.sql db sh -c 'mysql -hdb -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE" < /dump.sql'`
+- Run `$ sudo docker-compose run --rm wordpress php tools/init.php`.
+- Run `$ sudo docker-compose run --rm wordpress php tools/update-site-domain.php localhost:8080`.
+- Grant write permissions to the web-server, e.g.:
+  + `HTTPDUSER=www-data`
+  + `sudo setfacl -dR -m u:"$HTTPDUSER":rwX -m u:$(whoami):rwX www`
+  + `sudo setfacl -R -m u:"$HTTPDUSER":rwX -m u:$(whoami):rwX www`
+
+Now you have several endpoints to work with:
+- `http://localhost:8080/` - The Venus Project development website.
+- `http://localhost:8081/` - Adminer DB interface to make DB administration easier.
+- `http://localhost:8082/` - MailHog, mail debugger. All emails from WordPress and CiviCRM are redirected to MailHog SMTP server (see `mail` container) and are displayed on this nice web interface.
+
+To setup your admin password go to My Account -> Lost password and restore password for the user `thevenusproject`. Check your inbox in MailHog and follow the instructions.
+
+More info in these tutorials:
+- https://codeable.io/wordpress-developers-intro-docker/
+- https://codeable.io/wordpress-developers-intro-to-docker-part-two/
+
+
+
 ## Vagrant
 Vagrant allows you to run a virtual machine (vm) on your computer and do your development work within the vm. It can automate the installation and configuration of an operating system in the vm, including the installation and configuration of any software packages you want. It also can keep folders in sync between your host OS and your guest OS (on the vm). 
 
@@ -32,37 +69,6 @@ Debugging:
 Path mappings:  
 Q: In phpstorm, I have to set up path mappings. does this mean that I have to keep two repositories - one in my host OS and one in the guest OS? even though the one in the guest OS is shared between the two?  
 A: Vagrant shares the folders, so you only maintain one repo, but for the remote debugging to work, it needs to know where to map them to inside of vagrant
-
-## Docker
-
-If you choose to use Docker for your working environment you'll need first to install Docker in your machine:
-https://docs.docker.com/engine/installation/
-
-Afterwards you should follow these steps for using Docker in your The Venus Project development site:
-
-- Copy `.env.dist` file to `.env` and fill in missing values which you can find in your original `wp-config.php`.
-- Copy your original `wp-content` directory from server or backup to `docker/www/wp-content/` directory.
-- Run `$ docker-compose up`. You should see that `wordpress` container has been started successfully: `NOTICE: ready to handle connections`.
-- Import DB backups as follows (order matters, because dumps overlap on `civicrm_*` tables):
-  + `docker-compose run --rm -v /full/path/to/_wordpressdb.sql:/dump.sql db sh -c 'mysql -hdb -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE" < /dump.sql'`
-  + `docker-compose run --rm -v /full/path/to/_civicrmdb.sql:/dump.sql db sh -c 'mysql -hdb -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE" < /dump.sql'`
-- Run `$ docker-compose run --rm wordpress php tools/init.php`.
-- Run `$ docker-compose run --rm wordpress php tools/update-site-domain.php localhost:8080`.
-- Grant write permissions to the web-server, e.g.:
-  + `HTTPDUSER=www-data`
-  + `sudo setfacl -dR -m u:"$HTTPDUSER":rwX -m u:$(whoami):rwX docker/www`
-  + `sudo setfacl -R -m u:"$HTTPDUSER":rwX -m u:$(whoami):rwX docker/www`
-
-Now you have several endpoints to work with:
-- `http://localhost:8080/` - The Venus Project development website.
-- `http://localhost:8081/` - Adminer DB interface to make DB administration easier.
-- `http://localhost:8082/` - MailHog, mail debugger. All emails from WordPress and CiviCRM are redirected to MailHog SMTP server (see `mail` container) and are displayed on this nice web interface.
-
-To setup your admin password go to My Account -> Lost password and restore password for the user `thevenusproject`. Check your inbox in MailHog and follow the instructions.
-
-More info in these tutorials:
-- https://codeable.io/wordpress-developers-intro-docker/
-- https://codeable.io/wordpress-developers-intro-to-docker-part-two/
 
 ## Automation scripts
 The file `tvp-auto.php` automates the creation of the TVP website from filesystem and database backups.
