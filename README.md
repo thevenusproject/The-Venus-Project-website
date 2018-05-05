@@ -33,25 +33,28 @@ Path mappings:
 Q: In phpstorm, I have to set up path mappings. does this mean that I have to keep two repositories - one in my host OS and one in the guest OS? even though the one in the guest OS is shared between the two?  
 A: Vagrant shares the folders, so you only maintain one repo, but for the remote debugging to work, it needs to know where to map them to inside of vagrant
 
-## Docker
+## Docker (Recommended)
 
 If you choose to use Docker for your working environment you'll need first to install Docker in your machine:
 https://docs.docker.com/engine/installation/
 
+Go through all get started steps to be familiar with docker:
+https://docs.docker.com/get-started/
+
 Afterwards you should follow these steps for using Docker in your The Venus Project development site:
 
-- Copy `.env.dist` file to `.env` and fill in missing values which you can find in your original `wp-config.php`.
+- Copy `.env.dist` file to `.env` and fill in ONLY missing values which you can find in your original `wp-config.php`.
 - Copy your original `wp-content` directory from server or backup to `docker/www/wp-content/` directory.
-- Run `$ docker-compose up`. You should see that `wordpress` container has been started successfully: `NOTICE: ready to handle connections`.
-- Import DB backups as follows (order matters, because dumps overlap on `civicrm_*` tables):
-  + `docker-compose run --rm -v /full/path/to/_wordpressdb.sql:/dump.sql db sh -c 'mysql -hdb -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE" < /dump.sql'`
-  + `docker-compose run --rm -v /full/path/to/_civicrmdb.sql:/dump.sql db sh -c 'mysql -hdb -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE" < /dump.sql'`
-- Run `$ docker-compose run --rm wordpress php tools/init.php`.
-- Run `$ docker-compose run --rm wordpress php tools/update-site-domain.php localhost:8080`.
+- Run `$ sudo docker-compose up`. You should see that `wordpress` container has been started successfully: `NOTICE: ready to handle connections`.
+- In the new terminal import DB backups as follows (order matters, because dumps overlap on `civicrm_*` tables):
+  + `sudo docker-compose run --rm -v /full/path/to/_wordpressdb.sql:/dump.sql db sh -c 'mysql -hdb -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE" < /dump.sql'`
+  + `sudo docker-compose run --rm -v /full/path/to/_civicrmdb.sql:/dump.sql db sh -c 'mysql -hdb -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE" < /dump.sql'`
+- Run `$ sudo docker-compose run --rm wordpress php tools/init.php`.
+- Run `$ sudo docker-compose run --rm wordpress php tools/update-site-domain.php localhost:8080`.
 - Grant write permissions to the web-server, e.g.:
   + `HTTPDUSER=www-data`
-  + `sudo setfacl -dR -m u:"$HTTPDUSER":rwX -m u:$(whoami):rwX docker/www`
-  + `sudo setfacl -R -m u:"$HTTPDUSER":rwX -m u:$(whoami):rwX docker/www`
+  + `sudo setfacl -dR -m u:"$HTTPDUSER":rwX -m u:$(whoami):rwX www`
+  + `sudo setfacl -R -m u:"$HTTPDUSER":rwX -m u:$(whoami):rwX www`
 
 Now you have several endpoints to work with:
 - `http://localhost:8080/` - The Venus Project development website.
