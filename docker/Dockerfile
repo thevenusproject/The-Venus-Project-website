@@ -5,7 +5,7 @@ MAINTAINER Aleksey Chuprov <ilovemistakes@mail.ru>
 RUN apt-get update \
     && apt-get install -y libxml2-dev \
     && docker-php-ext-install soap \
-    && pecl install xdebug \
+    && pecl install xdebug-2.5.5 \
     && docker-php-ext-enable xdebug soap \
     && echo "xdebug.remote_enable=1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
     && echo "xdebug.profiler_enable_trigger=1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
