@@ -1,9 +1,9 @@
 version: '2'
 services:
   wordpress:
-    build: docker/
+    build: .
     volumes:
-      - ./docker/www:/var/www/html
+      - ./www:/var/www/html
     env_file: .env
     links:
       - db
