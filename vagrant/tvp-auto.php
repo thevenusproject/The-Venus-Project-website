@@ -22,7 +22,7 @@ $newtvp_civi_database = ''; //how you want the CiviCRM db to be named. If you al
 $path_newtvp_dump = DS.'vagrant' . DS .'tvp.sql'; //path to the Wordpress dump
 $path_newtvpcivi_dump = DS.'vagrant'.DS.'tvpcivi.sql'; //path to the CiviCRM dump
 $path_to_mysqlexe = 'D:'.DS.'xampp'.DS.'mysql'.DS.'bin'.DS.'mysql.exe'; //path to your mysql binary; needed on Windows only
-$newtvp_domain = 'newtvp.example.com'; //the domain you would like the site to have
+$newtvp_domain = 'newtvp.example.com'; //the domain you would like the site to have. It's recommended to keep this unchanged.
 
 
 
