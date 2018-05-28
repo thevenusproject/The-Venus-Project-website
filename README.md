@@ -73,14 +73,9 @@ A: Vagrant shares the folders, so you only maintain one repo, but for the remote
 ## Setup on macOS with Vagrant
 The macOS requires additional configurations to setup properly.
 
-1. [Install the Vagrant package](https://www.vagrantup.com/downloads.html)
-2. [Install VirtualBox](https://www.virtualbox.org/wiki/Downloads) - this provides the vm functionality
-3. Go through the [Vagrant Getting Started Guide](https://www.vagrantup.com/intro/getting-started/) (this is only for learning)
-4. Place the `Vagrantfile`, `bootstrap.sh`, `startup.sh` and `tvp-auto.php` files in the root Vagrant directory on your host OS
-    - `Vagrantfile` contains general setup instructions for your vagrant box
-    - `bootstrap.sh` instructions get executed when provisioning the vagrant box (i.e. installing or reinstalling the guest OS)
-    - `startup.sh` instructions get executed each time you start the guest OS (i.e. on `vagrant up`)
-5. Create on your host OS the directories that will be synced between host and guest OS:
+Do Step 1 to Step 4 from Setup above. Then:
+
+1. Create on your host OS the directories that will be synced between host and guest OS:
     - Create `var_log` inside the root Vagrant directory on your host OS.  
     - Create `sites-available` inside the root Vagrant directory on your host OS.
     - Create `newtvp` inside the root Vagrant directory on your host OS.
