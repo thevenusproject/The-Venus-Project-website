@@ -39,7 +39,7 @@ More info in these tutorials:
 
 
 ## Vagrant
-Vagrant allows you to run a virtual machine (vm) on your computer and do your development work within the vm. It can automate the installation and configuration of an operating system in the vm, including the installation and configuration of any software packages you want. It also can keep folders in sync between your host OS and your guest OS (on the vm). 
+Vagrant allows you to run a virtual machine (vm) on your computer and do your development work within the vm. It can automate the installation and configuration of an operating system in the vm, including the installation and configuration of any software packages you want. It also can keep folders in sync between your host OS and your guest OS (on the vm).
 
 In the `vagrant` directory here are included configuration files and shell scripts for an automated creation of a full LAMP stack with all needed configurations and software packages for running the TVP website.
 
@@ -69,6 +69,43 @@ Debugging:
 Path mappings:  
 Q: In phpstorm, I have to set up path mappings. does this mean that I have to keep two repositories - one in my host OS and one in the guest OS? even though the one in the guest OS is shared between the two?  
 A: Vagrant shares the folders, so you only maintain one repo, but for the remote debugging to work, it needs to know where to map them to inside of vagrant
+
+## Setup on macOS with Vagrant
+The macOS requires additional configurations to setup properly.
+
+Do Step 1 to Step 4 from Setup above. Then:
+
+1. Create on your host OS the directories that will be synced between host and guest OS:
+    - Create `var_log` inside the root Vagrant directory on your host OS.  
+    - Create `sites-available` inside the root Vagrant directory on your host OS.
+    - Create `newtvp` inside the root Vagrant directory on your host OS.
+6. Edit the `Vagrantfile`. Add a private-network by adding this line:
+    ```
+    config.vm.network "private_network", ip: "192.168.50.4" # you can choose any IP you like
+    ```
+7. Add this entry to hosts file on your host OS ([instructions](https://support.rackspace.com/how-to/modify-your-hosts-file/))
+    ```
+    192.168.50.4 newtvp.example.com # map it to the IP of your private-network specified in your `Vagranfile`
+    ```
+8. Download the latest Filesystem Archive and Database Dumps from FTP.
+9. Extract all contents from Filesystem Archive into `newtvp`.
+10. Edit the `tvp-auto.php` file:
+    - Set `$delete_exst_filesystem = false;`
+    - Set `$localhost_mysql_user`, `$localhost_mysql_user_pw`,
+	`$newtvp_db_prefix` like the settings in `newtvp/wp-config.php`.
+	– Set `$newtvp_civi_database` and `$newtvp_database` to the names specified in your downloaded Database Dumps (3rd line).
+	– Set path to Dumps for `$path_newtvp_dump` and `$path_newtvpcivi_dump`
+11. Start vagrant with `vagrant up`. There could be several problems while running the first `vagrant up`. Check out the Troubleshooting.
+12. If your succeeded accessing your guestOS with SSH, you have to edit the file `/etc/apache2/apache2.conf`:
+    - Set `user` to your Vagrant user (default is `vagrant`)
+	- Set `group` to your Vagrant user group (default is `vagrant`)
+	- Restart Apache `service apache2 restart`
+13. Execute `tvp-auto.php`. There could be several MYSQL Errors while executing. Check out the Troubleshooting.
+
+Troubleshooting  
+- If you get the Error: Vagrant cannot forward the specified ports on this VM, since they would collide with some other application that is already listening on these ports. The forwarded port to 80 is already in use on the host machine. Then you have to change the `config.vm.network "forwarded_port", guest: 80, host: 80` setting in `Vagrantfile` to an available port for `host:`.
+- If you get MYSQL Errors while executing `tvp-auto.php`, fix the problems manually. Mostly it is to [create MYSQL users or Grant Privileges](https://www.digitalocean.com/community/tutorials/how-to-create-a-new-user-and-grant-permissions-in-mysql) to them. Run the script as long as no more errors occur.
+- If you get the Error: PHP Warning:  file(/vagrant/newtvp/.htaccess): failed to open stream: No such file or directory. Just execute the script again. `.htaccess` should be created while this error occurs.
 
 ## Automation scripts
 The file `tvp-auto.php` automates the creation of the TVP website from filesystem and database backups.
